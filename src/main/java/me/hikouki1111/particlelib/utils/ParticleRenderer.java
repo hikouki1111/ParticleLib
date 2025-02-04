@@ -32,25 +32,68 @@ public class ParticleRenderer {
         for (double x = min.getX(); x <= max.getX(); x+=step) {
             for (double y = min.getY(); y <= max.getY(); y+=step) {
                 for (double z = min.getZ(); z <= max.getZ(); z+=step) {
-                    world.spawnParticle(particle, new Location(world, x, y, z), 1, 0, 0, 0, 0);
+                    spawnStaticParticle(particle, new Location(world, x, y, z), world);
                 }
             }
         }
+    }
+
+    public static void renderCircle(Particle particle, double centerX, double centerY, double centerZ, double radius, double segments, double step, World world) {
+        Vector firstPoint = null, prevPoint = null;
+
+        for (double i = 0; i <= segments ; i+=step) {
+            double angle = 2.0 * Math.PI * i / segments;
+            double x = centerX + radius * Math.cos(angle);
+            double z = centerZ + radius * Math.sin(angle);
+            Vector currentPoint = new Vector(x, centerY, z);
+
+            if (prevPoint != null) {
+                lineTo(
+                        particle,
+                        new BoundingBox(
+                                prevPoint.getX(), prevPoint.getY(), prevPoint.getZ(),
+                                currentPoint.getX(), currentPoint.getY(), currentPoint.getZ()
+                        ),
+                        step, world
+                );
+            }
+
+            if (i == 0) {
+                firstPoint = currentPoint;
+            }
+
+            prevPoint = currentPoint;
+        }
+
+        if (firstPoint != null) {
+            lineTo(
+                    particle,
+                    new BoundingBox(
+                            prevPoint.getX(), prevPoint.getY(), prevPoint.getZ(),
+                            firstPoint.getX(), firstPoint.getY(), firstPoint.getZ()
+                    ),
+                    step, world
+            );
+        }
+    }
+
+    private static void spawnStaticParticle(Particle particle, Location location, World world) {
+        world.spawnParticle(particle, location, 1, 0, 0, 0, 0);
     }
 
     private static void lineTo(Particle particle, BoundingBox box, double step, World world) {
         Vector min = box.getMin();
         Vector max = box.getMax();
         for (double x = min.getX(); x <= max.getX(); x+=step) {
-            world.spawnParticle(particle, new Location(world, x, min.getY(), min.getZ()), 1, 0, 0, 0, 0);
+            spawnStaticParticle(particle, new Location(world, x, min.getY(), min.getZ()), world);
         }
 
         for (double y = min.getY(); y <= max.getY(); y+=step) {
-            world.spawnParticle(particle, new Location(world, min.getX(), y, min.getZ()), 1, 0, 0, 0, 0);
+            spawnStaticParticle(particle, new Location(world, min.getX(), y, min.getZ()), world);
         }
 
         for (double z = min.getZ(); z <= max.getZ(); z+=step) {
-            world.spawnParticle(particle, new Location(world, min.getX(), min.getY(), z), 1, 0, 0, 0, 0);
+            spawnStaticParticle(particle, new Location(world, min.getX(), min.getY(), z), world);
         }
     }
 }

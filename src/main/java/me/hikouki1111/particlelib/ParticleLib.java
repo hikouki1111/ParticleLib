@@ -1,6 +1,8 @@
 package me.hikouki1111.particlelib;
 
+import me.hikouki1111.particlelib.utils.BoxHelper;
 import me.hikouki1111.particlelib.utils.ParticleRenderer;
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,7 +19,9 @@ public final class ParticleLib extends JavaPlugin {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    ParticleRenderer.renderBox(Particle.DOLPHIN, new BoundingBox(0, 101, 0, 1, 102, 1), 0.1, Bukkit.getWorld("world"));
+                    ParticleRenderer.renderCircle(Particle.DOLPHIN, 0, 100, 0, 5, 32, 0.1, Bukkit.getWorld("world"));
+                    BoundingBox box = new BoundingBox(0, 101, 0, 1, 102, 1);
+                    ParticleRenderer.renderBox(Particle.DOLPHIN, box, 0.1, Bukkit.getWorld("world"));
                     ParticleRenderer.renderFilledBox(Particle.DOLPHIN, new BoundingBox(0, 99, 0, 1, 100, 1), 0.1, Bukkit.getWorld("world"));
                 }
             }.runTaskTimerAsynchronously(this, 0, 0);
