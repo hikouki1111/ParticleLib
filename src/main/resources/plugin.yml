@@ -1,0 +1,4 @@
+name: particlelib
+version: '${project.version}'
+main: me.hikouki1111.particlelib.ParticleLib
+api-version: '1.16'
